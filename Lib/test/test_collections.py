@@ -1652,6 +1652,18 @@ class TestCollectionABCs(ABCTestCase):
         self.assertEqual(seq.count(nan), 2)
         self.assertEqual(seq.count(obj), 1)
 
+    def test_ItemsView_contains_non_pair(self):
+        # gh-68622: like dict_items, ItemsView does not raise for objects
+        # that are not (key, value) pairs.
+        view = ItemsView({1: 2})
+        for item in (1, None, (), (1,), (1, 2, 3)):
+            with self.subTest(item=item):
+                self.assertNotIn(item, view)
+                self.assertNotIn(item, {1: 2}.items())
+        self.assertIn((1, 2), view)
+        self.assertTrue(view.isdisjoint([1, (1, 3), (1, 2, 3)]))
+        self.assertEqual(view & [1, (1, 2), (1, 2, 3)], {(1, 2)})
+
     def assertSameSet(self, s1, s2):
         # coerce both to a real set then check equality
         self.assertSetEqual(set(s1), set(s2))

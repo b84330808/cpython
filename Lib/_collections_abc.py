@@ -869,7 +869,11 @@ class ItemsView(MappingView, Set):
         return set(it)
 
     def __contains__(self, item):
-        key, value = item
+        try:
+            key, value = item
+        except (TypeError, ValueError):
+            # Not a (key, value) pair, so it cannot be an item.
+            return False
         try:
             v = self._mapping[key]
         except KeyError:

@@ -1,0 +1,4 @@
+Membership tests on :class:`collections.abc.ItemsView` now return ``False``
+instead of raising :exc:`TypeError` or :exc:`ValueError` when the item is
+not a ``(key, value)`` pair, like :class:`dict` item views. This also fixes
+set operations such as ``isdisjoint()`` and ``&`` with such items.
